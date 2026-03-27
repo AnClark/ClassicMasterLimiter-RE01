@@ -89,9 +89,19 @@ void ClassicMasterLimiterPlugin::initParameter(uint32_t index, Parameter& param)
         param.ranges.def     =  -5.0f;
         break;
 
-    case PARAM_PEAK_METER:
-        param.name   = "Peak Meter";
-        param.symbol = "peak_meter";
+    case PARAM_PEAK_METER_L:
+        param.name   = "Peak Meter L";
+        param.symbol = "peak_meter_l";
+        param.unit   = "dB";
+        param.hints  = kParameterIsOutput | kParameterIsLogarithmic;
+        param.ranges.min     = -20.0f;
+        param.ranges.max     =   0.0f;
+        param.ranges.def     = -5.0f;
+        break;
+
+    case PARAM_PEAK_METER_R:
+        param.name   = "Peak Meter R";
+        param.symbol = "peak_meter_r";
         param.unit   = "dB";
         param.hints  = kParameterIsOutput | kParameterIsLogarithmic;
         param.ranges.min     = -20.0f;
@@ -117,9 +127,10 @@ float ClassicMasterLimiterPlugin::getParameterValue(uint32_t index) const
     {
     case PARAM_THRESHOLD:
         return normTodB(fState.thresholdParam);
-    case PARAM_PEAK_METER:
-        // Return min of L/R (most limiting channel), same as run() output
-        return normTodB(std::min(fState.peakMeterL, fState.peakMeterR));
+    case PARAM_PEAK_METER_L:
+        return normTodB(fState.peakMeterL);
+    case PARAM_PEAK_METER_R:
+        return normTodB(fState.peakMeterR);
     default:
         return 0.0f;
     }
@@ -503,9 +514,9 @@ void ClassicMasterLimiterPlugin::run(const float** inputs,
     for (uint32_t i = 0; i < frames; ++i)
         processSample(inL[i], inR[i], outL[i], outR[i]);
 
-    // Expose peak-meter as output parameter — min of L and R (most limiting channel)
-    const float peakLin = std::min(fState.peakMeterL, fState.peakMeterR);
-    setParameterValue(PARAM_PEAK_METER, normTodB(peakLin));
+    // Expose per-channel peak meters as output parameters
+    setParameterValue(PARAM_PEAK_METER_L, normTodB(fState.peakMeterL));
+    setParameterValue(PARAM_PEAK_METER_R, normTodB(fState.peakMeterR));
 }
 
 // ---------------------------------------------------------------------------
