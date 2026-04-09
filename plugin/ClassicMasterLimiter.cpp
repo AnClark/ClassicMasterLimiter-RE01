@@ -149,24 +149,6 @@ void ClassicMasterLimiterPlugin::setParameterValue(uint32_t index, float value)
 }
 
 // ---------------------------------------------------------------------------
-// Programs
-// ---------------------------------------------------------------------------
-void ClassicMasterLimiterPlugin::initProgramName(uint32_t index, String& programName)
-{
-    if (index < 16)
-        programName = kProgramNames[index];
-}
-
-void ClassicMasterLimiterPlugin::loadProgram(uint32_t index)
-{
-    if (index < 16)
-    {
-        fState.thresholdParam = kProgramThresholds[index];
-        fDirty = true;
-    }
-}
-
-// ---------------------------------------------------------------------------
 // DSP lifecycle
 // ---------------------------------------------------------------------------
 void ClassicMasterLimiterPlugin::sampleRateChanged(double /*newSampleRate*/)
