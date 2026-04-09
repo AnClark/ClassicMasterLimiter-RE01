@@ -1,9 +1,9 @@
 #pragma once
 
-#define DISTRHO_PLUGIN_BRAND         "Kjaerhus Audio"
-#define DISTRHO_PLUGIN_NAME          "Classic Master Limiter"
-#define DISTRHO_PLUGIN_URI           "urn:kjaerhus:classicmasterlimiter"
-#define DISTRHO_PLUGIN_CLAP_ID       "audio.kjaerhus.classic-master-limiter"
+#define DISTRHO_PLUGIN_BRAND         "AnClark Liu"
+#define DISTRHO_PLUGIN_NAME          "Classic Master Limiter RE-01"
+#define DISTRHO_PLUGIN_URI           "https://github.com/AnClark/ClassicMasterLimiter-RE01.git"
+#define DISTRHO_PLUGIN_CLAP_ID       "studio.anclark.classic.master.limiter.re01"
 
 #define DISTRHO_PLUGIN_NUM_INPUTS    2
 #define DISTRHO_PLUGIN_NUM_OUTPUTS   2
