@@ -24,6 +24,15 @@ endif()
 
 add_subdirectory("${DPF_PATH}" dpf)
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Options
+# ─────────────────────────────────────────────────────────────────────────────
+
+option (CONFIG_BUILD_JACK_STANDALONE "Build JACK standalone format (for debugging)")
+if (CONFIG_BUILD_JACK_STANDALONE)
+    set (TARGET_JACK jack)
+endif ()
+
 # ---------------------------------------------------------------------------
 # Plugin sources
 # ---------------------------------------------------------------------------
@@ -40,13 +49,26 @@ set(PLUGIN_INCLUDES
 # ---------------------------------------------------------------------------
 dpf_add_plugin(ClassicMasterLimiter
     TARGETS
-        vst2 vst3 clap
+        vst2 vst3 clap ${TARGET_JACK}
     MONOLITHIC
     FILES_DSP
         ${PLUGIN_SOURCES}
+    FILES_UI
+        plugin/UI.cpp
+        plugin/UISubroutines.cpp
+        widgets/dpf-imgui/DearImGui.cpp
+        widgets/imgui-knobs-mod/imgui-knobs.cpp
 )
 
-target_include_directories(ClassicMasterLimiter PUBLIC ${PLUGIN_INCLUDES})
+target_include_directories(ClassicMasterLimiter PUBLIC
+    ${PLUGIN_INCLUDES}
+    widgets/dpf-imgui
+    widgets/dpf-imgui/DearImGui
+    widgets/imgui-knobs-mod
+    widgets/imgui-ext
+)
+
+target_compile_definitions(ClassicMasterLimiter-ui PRIVATE IMGUI_KNOBS_SET_CURSOR=1)
 
 # Require C++14 for constexpr and related features
 target_compile_features(ClassicMasterLimiter PUBLIC cxx_std_14)
