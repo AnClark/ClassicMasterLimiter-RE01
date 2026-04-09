@@ -38,6 +38,7 @@ endif ()
 # ---------------------------------------------------------------------------
 set(PLUGIN_SOURCES
     plugin/ClassicMasterLimiter.cpp
+    plugin/CoreDSP.cpp
 )
 
 set(PLUGIN_INCLUDES

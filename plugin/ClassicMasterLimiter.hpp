@@ -116,10 +116,6 @@ protected:
     float getParameterValue(uint32_t index) const override;
     void  setParameterValue(uint32_t index, float value) override;
 
-    // --- Programs ---
-    void initProgramName(uint32_t index, String& programName) override;
-    void loadProgram(uint32_t index) override;
-
     // --- DSP lifecycle ---
     void sampleRateChanged(double newSampleRate) override;
     void activate() override;
