@@ -19,6 +19,7 @@ protected:
 private:
     float fParams[DISTRHO_PLUGIN_NUM_PARAMETERS];
     int fLastMouseCursor = -1;
+    bool fAboutWindowOpened = false;
 
     void _loadFonts();
 

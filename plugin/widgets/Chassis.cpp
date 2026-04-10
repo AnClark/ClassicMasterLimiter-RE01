@@ -44,7 +44,7 @@ void ClassicMasterLimiterUI::_drawKjearhusLogo(const ImVec2& size)
     //
     if (ImGui::InvisibleButton("##Logo_Clickable", size))    // Also acted as reserved space for the logo
     {
-        //fAboutWindowOpened = true;      // Open "About" window
+        fAboutWindowOpened = true;      // Open "About" window
     }
 
     if (ImGui::IsItemHovered())
