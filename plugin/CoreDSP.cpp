@@ -44,7 +44,8 @@ void ClassicMasterLimiterPlugin::activate()
     fState.s3_envelope_L = 0.0f;
     fState.s3_envelope_R = 0.0f;
 
-    // Peak meter starts at 1.0 (0 dB) — matches original init of state[0x180/0x184]=1.0
+    // Gain Reduction meter starts at 1.0 (0 dB = no limiting)
+    // Mirrors original init of state[0x180/0x184]=1.0
     fState.peakMeterL = 1.0f;
     fState.peakMeterR = 1.0f;
 
@@ -126,8 +127,9 @@ void ClassicMasterLimiterPlugin::processSample(float inL, float inR,
     float ratioL = thr / absL; if (ratioL > 1.0f) ratioL = 1.0f;
     float ratioR = thr / absR; if (ratioR > 1.0f) ratioR = 1.0f;
 
-    // 4. Peak-hold for output meter — state[0x180] (L), state[0x184] (R), τ≈200 ms release
-    // Original: if state <= new_ratio → smooth up (release); else → snap down (attack)
+    // 4. Gain Reduction meter (peak-hold) — state[0x180] (L), state[0x184] (R)
+    // Tracks minimum gain ratio (= maximum limiting amount) with τ≈200 ms release
+    // Attack: instant (when limiting increases), Release: smooth (when limiting decreases)
     if (s.peakMeterL <= ratioL)
         s.peakMeterL += (ratioL - s.peakMeterL) * s.coeff_190;
     else

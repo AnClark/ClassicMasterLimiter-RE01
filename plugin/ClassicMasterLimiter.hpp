@@ -72,8 +72,9 @@ struct LimiterState
     float s3_envelope_L   = 0.0f;
     float s3_envelope_R   = 0.0f;
 
-    // --- Peak meter (output parameter, smoothed) ---
-    // Mirrors state[0x180] (L) and state[0x184] (R) — tracked independently
+    // --- Gain Reduction meter (output parameter, peak-hold) ---
+    // Stores gain coefficient (1.0 = no limiting, <1.0 = limiting active)
+    // Mirrors state[0x180] (L) and state[0x184] (R) from original
     float peakMeterL       = 1.0f;
     float peakMeterR       = 1.0f;
 

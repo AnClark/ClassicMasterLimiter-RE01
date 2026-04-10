@@ -26,5 +26,5 @@
 
 // Parameter indices
 #define PARAM_THRESHOLD    0
-#define PARAM_PEAK_METER_L 1
-#define PARAM_PEAK_METER_R 2
+#define PARAM_GAIN_REDUCTION_L 1
+#define PARAM_GAIN_REDUCTION_R 2
