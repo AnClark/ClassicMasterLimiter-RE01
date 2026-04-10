@@ -89,24 +89,24 @@ void ClassicMasterLimiterPlugin::initParameter(uint32_t index, Parameter& param)
         param.ranges.def     =  -5.0f;
         break;
 
-    case PARAM_PEAK_METER_L:
-        param.name   = "Peak Meter L";
-        param.symbol = "peak_meter_l";
+    case PARAM_GAIN_REDUCTION_L:
+        param.name   = "Gain Reduction L";
+        param.symbol = "gain_reduction_l";
         param.unit   = "dB";
         param.hints  = kParameterIsOutput | kParameterIsLogarithmic;
-        param.ranges.min     = -20.0f;
+        param.ranges.min     = -60.0f;
         param.ranges.max     =   0.0f;
-        param.ranges.def     = -5.0f;
+        param.ranges.def     =   0.0f;
         break;
 
-    case PARAM_PEAK_METER_R:
-        param.name   = "Peak Meter R";
-        param.symbol = "peak_meter_r";
+    case PARAM_GAIN_REDUCTION_R:
+        param.name   = "Gain Reduction R";
+        param.symbol = "gain_reduction_r";
         param.unit   = "dB";
         param.hints  = kParameterIsOutput | kParameterIsLogarithmic;
-        param.ranges.min     = -20.0f;
+        param.ranges.min     = -60.0f;
         param.ranges.max     =   0.0f;
-        param.ranges.def     = -5.0f;
+        param.ranges.def     =   0.0f;
         break;
 
     default:
@@ -127,10 +127,12 @@ float ClassicMasterLimiterPlugin::getParameterValue(uint32_t index) const
     {
     case PARAM_THRESHOLD:
         return normTodB(fState.thresholdParam);
-    case PARAM_PEAK_METER_L:
-        return normTodB(fState.peakMeterL);
-    case PARAM_PEAK_METER_R:
-        return normTodB(fState.peakMeterR);
+    case PARAM_GAIN_REDUCTION_L:
+        // Gain Reduction = 20 * log10(ratio), where ratio = threshold/peak
+        // Range: 0 dB (no compression) to -∞ dB (full limiting)
+        return 20.0f * std::log10(std::max(fState.peakMeterL, 1e-6f));
+    case PARAM_GAIN_REDUCTION_R:
+        return 20.0f * std::log10(std::max(fState.peakMeterR, 1e-6f));
     default:
         return 0.0f;
     }
@@ -167,8 +169,8 @@ void ClassicMasterLimiterPlugin::run(const float** inputs,
         processSample(inL[i], inR[i], outL[i], outR[i]);
 
     // Expose per-channel peak meters as output parameters
-    setParameterValue(PARAM_PEAK_METER_L, normTodB(fState.peakMeterL));
-    setParameterValue(PARAM_PEAK_METER_R, normTodB(fState.peakMeterR));
+    setParameterValue(PARAM_GAIN_REDUCTION_L, normTodB(fState.peakMeterL));
+    setParameterValue(PARAM_GAIN_REDUCTION_R, normTodB(fState.peakMeterR));
 }
 
 // ---------------------------------------------------------------------------
