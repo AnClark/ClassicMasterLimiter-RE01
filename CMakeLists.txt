@@ -57,6 +57,7 @@ dpf_add_plugin(ClassicMasterLimiter
     FILES_UI
         plugin/UI.cpp
         plugin/UISubroutines.cpp
+        plugin/widgets/Chassis.cpp
         widgets/dpf-imgui/DearImGui.cpp
         widgets/imgui-knobs-mod/imgui-knobs.cpp
 )
