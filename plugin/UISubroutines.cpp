@@ -105,7 +105,7 @@ void ClassicMasterLimiterUI::_addThresholdKnob()
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(0x2f + 90, 0x4d + 90, 0x44 + 90, 0xff));
     ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);
 
-    if (ImGuiKnobs_Mod::Knob("THRESHOLD (dB)",
+    if (ImGuiKnobs_Mod::Knob("LEVEL (dB)",
                              &fParams[PARAM_THRESHOLD],
                              -20.0f,
                              0.0f,
