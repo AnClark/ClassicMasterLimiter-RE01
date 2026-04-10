@@ -21,14 +21,17 @@ private:
     int fLastMouseCursor = -1;
 
     void _loadFonts();
+
     void _drawChassisBackground(float margin, float rounding);
     void _drawKjearhusLogo(const ImVec2& size);
     void _drawPluginName();
 
     void _addThresholdKnob();
+    void _drawPeakMeterReservedArea(const ImVec2& size);
+
     bool _BeginSection(const char* title, float width);
     void _EndSection();
-    void _drawPeakMeterReservedArea(const ImVec2& size);
+
     void _UpdateMouseCursor();
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClassicMasterLimiterUI)
