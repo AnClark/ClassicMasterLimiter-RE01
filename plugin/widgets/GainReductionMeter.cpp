@@ -89,6 +89,16 @@ void ClassicMasterLimiterUI::_drawGainReductionMeter()
         ImGui::EndGroup();
     }
 
+    ImGui::Dummy(ImVec2(0, 8));
+
+    // Label ("PEAK LEVEL METER")
+    {
+        ImGui::AlignTextToFramePadding();
+        ImGui::Dummy(ImVec2(50, 0));
+        ImGui::SameLine();
+        ImGui::Text("PEAK LEVEL METER");
+    }
+
     ImGui::PopFont();
     ImGui::EndGroup();
 }
