@@ -46,6 +46,11 @@ set(PLUGIN_INCLUDES
 )
 
 # ---------------------------------------------------------------------------
+# Generate config.h from config.h.in with version numbers
+# ---------------------------------------------------------------------------
+configure_file (plugin/config.h.in ${PROJECT_BINARY_DIR}/config.h @ONLY)
+
+# ---------------------------------------------------------------------------
 # Build DPF targets
 # ---------------------------------------------------------------------------
 dpf_add_plugin(ClassicMasterLimiter
@@ -65,6 +70,7 @@ dpf_add_plugin(ClassicMasterLimiter
 
 target_include_directories(ClassicMasterLimiter PUBLIC
     ${PLUGIN_INCLUDES}
+    ${PROJECT_BINARY_DIR}
     widgets/dpf-imgui
     widgets/dpf-imgui/DearImGui
     widgets/imgui-knobs-mod
