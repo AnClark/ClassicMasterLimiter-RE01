@@ -191,23 +191,3 @@ void ClassicMasterLimiterUI::_drawPluginName()
 
     ImGui::EndGroup();
 }
-
-void ClassicMasterLimiterUI::_drawPeakMeterReservedArea(const ImVec2& size)
-{
-    const ImVec2 p0 = ImGui::GetCursorScreenPos();
-    const ImVec2 p1(p0.x + size.x, p0.y + size.y);
-
-    ImDrawList* drawList = ImGui::GetWindowDrawList();
-    drawList->AddRectFilled(p0, p1, IM_COL32(0, 0, 0, 20), 4.0f);
-    drawList->AddRect(p0, p1, IM_COL32(255, 255, 255, 80), 4.0f);
-
-    ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);
-    const char* text = "Reserved for future meter";
-    const ImVec2 textSize = ImGui::CalcTextSize(text);
-    const ImVec2 textPos(p0.x + (size.x - textSize.x) * 0.5f,
-                         p0.y + (size.y - textSize.y) * 0.5f);
-    drawList->AddText(textPos, IM_COL32(255, 255, 255, 170), text);
-    ImGui::PopFont();
-
-    ImGui::Dummy(size);
-}

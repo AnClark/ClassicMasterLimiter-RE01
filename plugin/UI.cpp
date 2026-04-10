@@ -59,9 +59,9 @@ void ClassicMasterLimiterUI::onImGuiDisplay()
 
             if (_BeginSection("COMPRESSION", 260.0f))
             {
-                ImGui::Dummy(ImVec2(8.0f, 0.0f));
+                ImGui::Dummy(ImVec2(16.0f, 0.0f));
                 ImGui::SameLine();
-                _drawPeakMeterReservedArea(ImVec2(194.0f, 64.0f));
+                _drawGainReductionMeter();
                 _EndSection();
             }
 

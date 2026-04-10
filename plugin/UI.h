@@ -27,7 +27,7 @@ private:
     void _drawPluginName();
 
     void _addThresholdKnob();
-    void _drawPeakMeterReservedArea(const ImVec2& size);
+    void _drawGainReductionMeter();
 
     bool _BeginSection(const char* title, float width);
     void _EndSection();

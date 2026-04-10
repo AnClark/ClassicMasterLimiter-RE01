@@ -58,6 +58,7 @@ dpf_add_plugin(ClassicMasterLimiter
         plugin/UI.cpp
         plugin/UISubroutines.cpp
         plugin/widgets/Chassis.cpp
+        plugin/widgets/GainReductionMeter.cpp
         widgets/dpf-imgui/DearImGui.cpp
         widgets/imgui-knobs-mod/imgui-knobs.cpp
 )
