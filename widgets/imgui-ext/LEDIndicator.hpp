@@ -30,6 +30,11 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+// Define LED_INDICATOR_OFF_HIGHLIGHT to enable specular reflection on unlit LEDs
+// (simulates external light reflecting off the plastic housing).
+// Comment out to disable the off-state highlight.
+#define LED_INDICATOR_OFF_HIGHLIGHT
+
 namespace ImGuiExt {
 
 // Draw a spherical LED indicator with realistic lighting and depth.
@@ -80,11 +85,11 @@ static inline void LEDIndicator(
     ImVec4 base_color = lit_color;
     if (!is_lit)
     {
-        // Desaturate and darken when off
-        const float gray = (base_color.x * 0.299f +
-                           base_color.y * 0.587f +
-                           base_color.z * 0.114f) * 0.15f;
-        base_color.x = base_color.y = base_color.z = gray;
+        // Darken but keep the color hue (unlit LEDs still show their tint)
+        const float dimming_factor = 0.28f;  // 28% brightness when off
+        base_color.x *= dimming_factor;
+        base_color.y *= dimming_factor;
+        base_color.z *= dimming_factor;
         base_color.w = 1.0f;
     }
 
@@ -99,7 +104,7 @@ static inline void LEDIndicator(
     //   • Outer 60% : fade to darker edge (simulates sphere curvature away from light)
     
     const float inner_threshold = 0.4f;   // 40% of radius stays at peak brightness
-    const float edge_darken     = 0.35f;  // rim is 35% as bright as center
+    const float edge_darken     = is_lit ? 0.35f : 0.55f;  // brighter edge when off for visibility
 
     const int num_rings = 24;  // smooth gradient with 24 concentric circles
     
@@ -134,10 +139,16 @@ static inline void LEDIndicator(
     // Real LEDs exhibit a bright reflection spot where the light source hits
     // the curved surface. Position it at ~45° from top-left.
     
-    if (is_lit)  // only show highlight when LED is active
+#ifdef LED_INDICATOR_OFF_HIGHLIGHT
+    const bool draw_highlight = true;  // show highlight in both lit and unlit states
+#else
+    const bool draw_highlight = is_lit;  // only show highlight when LED is active
+#endif
+    
+    if (draw_highlight)
     {
-        const float highlight_offset = radius * 0.35f;  // 35% from center
-        const float highlight_radius = radius * 0.30f;  // 30% of LED radius
+        const float highlight_offset = radius * 0.40f;  // 40% from center
+        const float highlight_radius = radius * 0.35f;  // 35% of LED radius
         
         // Offset toward top-left (negative x, negative y)
         const ImVec2 highlight_center(
@@ -145,7 +156,10 @@ static inline void LEDIndicator(
             center.y - highlight_offset * 0.707f
         );
 
-        // Draw a bright white spot with soft falloff
+        // When unlit, the highlight is dimmer (reflects ambient light, not self-emission)
+        const float highlight_strength = is_lit ? 0.85f : 0.70f;
+
+        // Draw a bright spot with soft falloff
         const int highlight_steps = 8;
         for (int i = highlight_steps; i >= 0; --i)
         {
@@ -153,7 +167,7 @@ static inline void LEDIndicator(
             const float r = highlight_radius * t;
             
             // Exponential falloff for a "hot spot" appearance
-            const float alpha = (1.0f - t) * (1.0f - t) * 0.85f;
+            const float alpha = (1.0f - t) * (1.0f - t) * highlight_strength;
             
             const ImU32 color = IM_COL32(255, 255, 255, static_cast<int>(alpha * 255));
             dl->AddCircleFilled(highlight_center, r, color, 16);
