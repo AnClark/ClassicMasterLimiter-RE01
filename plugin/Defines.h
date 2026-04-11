@@ -31,8 +31,9 @@
 #endif
 
 // ---------------------------------------------------------------------------
-// Tiny epsilon used throughout (= 1e-20, same as original DAT_004842fc)
+// Constants extracted from original plugin
 // ---------------------------------------------------------------------------
+// Tiny epsilon used throughout (= 1e-20, same as original DAT_004842fc)
 static constexpr float kTinyEps    = 1e-20f;
 // Dither scale (= 6e-8, DAT_004842f0)
 static constexpr float kDitherAmp  = 6e-8f;
