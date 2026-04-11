@@ -42,9 +42,10 @@ struct LimiterState
     float lpf_b  = 0.0f; // b0 = 1/(1+w)
     float lpf_a1 = 0.0f; // a1 = (1-w)/(1+w)
 
-    // Lookahead delay parameters
-    int lookAheadSamples = 0;
-    int postDelaySamples = 0;
+    // Lookahead delay parameters (sample counts, scaled with sample rate)
+    int lookAheadSamples = 0;  // pre-delay: look-ahead buffer
+    int postDelaySamples = 0;  // post-delay: remaining buffer after look-ahead
+    int totalDelaySamples = 0; // total delay: lookAhead + postDelay
 
     // --- Stage 1 L/R envelope states ---
     float s1_envelope_L   = 0.0f;
