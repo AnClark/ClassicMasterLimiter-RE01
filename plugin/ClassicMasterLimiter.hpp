@@ -4,6 +4,8 @@
 #include <cmath>
 #include <cstring>
 
+#include "config.h"
+
 START_NAMESPACE_DISTRHO
 
 // ---------------------------------------------------------------------------
@@ -103,13 +105,13 @@ public:
 
 protected:
     // --- Plugin info ---
-    const char* getLabel()   const noexcept override { return "ClassicMasterLimiter"; }
-    const char* getMaker()   const noexcept override { return "Kjaerhus Audio"; }
-    const char* getLicense() const noexcept override { return "Proprietary"; }
-    uint32_t    getVersion() const noexcept override { return d_version(1, 0, 0); }
+    const char* getLabel()   const noexcept override { return DISTRHO_PLUGIN_NAME; }
+    const char* getMaker()   const noexcept override { return DISTRHO_PLUGIN_BRAND; }
+    const char* getLicense() const noexcept override { return "GPLv3"; }
+    uint32_t    getVersion() const noexcept override { return d_version(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH); }
     int64_t     getUniqueId()const noexcept override
     {
-        return d_cconst('K', 'M', 'L', 'T');
+        return d_cconst('K', 'M', 'L', 't');
     }
 
     // --- Parameters ---
