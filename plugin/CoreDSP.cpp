@@ -2,16 +2,9 @@
 #include "Defines.h"
 
 // ---------------------------------------------------------------------------
-// DSP lifecycle
+// Reset audio buffer
 // ---------------------------------------------------------------------------
-void ClassicMasterLimiterPlugin::sampleRateChanged(double /*newSampleRate*/)
-{
-    fDirty = true;
-    recalculateCoefficients();
-    activate();
-}
-
-void ClassicMasterLimiterPlugin::activate()
+void ClassicMasterLimiterPlugin::resetBuffer()
 {
     // Clear all envelopes and ring buffers (mirrors FUN_0048365c open/reset)
     std::memset(fState.ringL, 0, sizeof(fState.ringL));
@@ -48,10 +41,6 @@ void ClassicMasterLimiterPlugin::activate()
     // Mirrors original init of state[0x180/0x184]=1.0
     fState.peakMeterL = 1.0f;
     fState.peakMeterR = 1.0f;
-
-    // Report latency to host: total delay = postDelaySamples + lookAheadSamples
-    // = kDelaySpan = 580 samples (0x244 from original), regardless of sample rate.
-    setLatency(static_cast<uint32_t>(fState.postDelaySamples + fState.lookAheadSamples));
 }
 
 // ---------------------------------------------------------------------------
@@ -91,11 +80,30 @@ void ClassicMasterLimiterPlugin::recalculateCoefficients()
     fState.lpf_a1 = (1.0f - w) / (1.0f + w);
 
     // --- Lookahead delay sizing ---
+#if LIMITER_DELAY_MODE == 0
+    // Mode 0: Fixed sample count (original behavior)
+    // - Total delay is always 580 samples regardless of sample rate
+    // - Matches original plugin exactly (confirmed at 48 kHz by user)
+    // - Latency time decreases at higher sample rates but stays stable in samples
+    fState.totalDelaySamples = kDelaySpan;  // Fixed: always 580
     fState.lookAheadSamples = static_cast<int>(std::round(kLookAheadT * Fs));
-    // Original literal: 0x244 = 580; postDelay = 580 - lookAheadSamples
-    fState.postDelaySamples = kDelaySpan - fState.lookAheadSamples;
-    if (fState.postDelaySamples < 0)
+    fState.postDelaySamples = fState.totalDelaySamples - fState.lookAheadSamples;
+#else
+    // Mode 1: Fixed time constant (improved behavior)
+    // - Total delay time remains constant (~13.15 ms) across all sample rates
+    // - Sample count scales with rate to maintain consistent latency time
+    // - Better look-ahead effectiveness at high sample rates
+    // - May cause DAW delay compensation updates when changing sample rate
+    fState.totalDelaySamples = static_cast<int>(std::round(kTotalDelayTime * Fs));
+    fState.lookAheadSamples = static_cast<int>(std::round(kLookAheadT * Fs));
+    fState.postDelaySamples = fState.totalDelaySamples - fState.lookAheadSamples;
+#endif
+    
+    // Sanity check: ensure positive postDelay
+    if (fState.postDelaySamples < 0) {
         fState.postDelaySamples = 0;
+        fState.totalDelaySamples = fState.lookAheadSamples;
+    }
 
     fDirty = false;
 }

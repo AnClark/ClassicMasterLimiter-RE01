@@ -4,7 +4,7 @@
 #include <cmath>
 #include <cstring>
 
-START_NAMESPACE_DISTRHO
+#include "config.h"
 
 // ---------------------------------------------------------------------------
 // Classic Master Limiter DSP state
@@ -40,9 +40,10 @@ struct LimiterState
     float lpf_b  = 0.0f; // b0 = 1/(1+w)
     float lpf_a1 = 0.0f; // a1 = (1-w)/(1+w)
 
-    // Lookahead delay parameters
-    int lookAheadSamples = 0;
-    int postDelaySamples = 0;
+    // Lookahead delay parameters (sample counts, scaled with sample rate)
+    int lookAheadSamples = 0;  // pre-delay: look-ahead buffer
+    int postDelaySamples = 0;  // post-delay: remaining buffer after look-ahead
+    int totalDelaySamples = 0; // total delay: lookAhead + postDelay
 
     // --- Stage 1 L/R envelope states ---
     float s1_envelope_L   = 0.0f;
@@ -96,20 +97,20 @@ struct LimiterState
 };
 
 // ---------------------------------------------------------------------------
-class ClassicMasterLimiterPlugin : public Plugin
+class ClassicMasterLimiterPlugin : public DISTRHO::Plugin
 {
 public:
     ClassicMasterLimiterPlugin();
 
 protected:
     // --- Plugin info ---
-    const char* getLabel()   const noexcept override { return "ClassicMasterLimiter"; }
-    const char* getMaker()   const noexcept override { return "Kjaerhus Audio"; }
-    const char* getLicense() const noexcept override { return "Proprietary"; }
-    uint32_t    getVersion() const noexcept override { return d_version(1, 0, 0); }
+    const char* getLabel()   const noexcept override { return DISTRHO_PLUGIN_NAME; }
+    const char* getMaker()   const noexcept override { return DISTRHO_PLUGIN_BRAND; }
+    const char* getLicense() const noexcept override { return "GPLv3"; }
+    uint32_t    getVersion() const noexcept override { return d_version(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH); }
     int64_t     getUniqueId()const noexcept override
     {
-        return d_cconst('K', 'M', 'L', 'T');
+        return d_cconst('K', 'M', 'L', 't');
     }
 
     // --- Parameters ---
@@ -125,11 +126,10 @@ protected:
 private:
     void recalculateCoefficients();
     void processSample(float inL, float inR, float& outL, float& outR);
+    void resetBuffer();
 
     LimiterState fState;
     bool         fDirty = true;
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClassicMasterLimiterPlugin)
 };
-
-END_NAMESPACE_DISTRHO
