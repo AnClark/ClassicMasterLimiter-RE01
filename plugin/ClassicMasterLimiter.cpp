@@ -24,8 +24,6 @@
 #include <cstring>
 #include <algorithm>
 
-START_NAMESPACE_DISTRHO
-
 // ---------------------------------------------------------------------------
 // Program names (16 programs, same as original)
 // ---------------------------------------------------------------------------
@@ -207,6 +205,9 @@ void ClassicMasterLimiterPlugin::run(const float** inputs,
 // ---------------------------------------------------------------------------
 // Plugin factory
 // ---------------------------------------------------------------------------
+
+START_NAMESPACE_DISTRHO
+
 Plugin* createPlugin()
 {
     return new ClassicMasterLimiterPlugin();

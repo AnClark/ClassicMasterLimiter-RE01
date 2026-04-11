@@ -6,8 +6,6 @@
 
 #include "config.h"
 
-START_NAMESPACE_DISTRHO
-
 // ---------------------------------------------------------------------------
 // Classic Master Limiter DSP state
 // Offsets mirror the Delphi object layout found by reverse engineering.
@@ -99,7 +97,7 @@ struct LimiterState
 };
 
 // ---------------------------------------------------------------------------
-class ClassicMasterLimiterPlugin : public Plugin
+class ClassicMasterLimiterPlugin : public DISTRHO::Plugin
 {
 public:
     ClassicMasterLimiterPlugin();
@@ -135,5 +133,3 @@ private:
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClassicMasterLimiterPlugin)
 };
-
-END_NAMESPACE_DISTRHO
