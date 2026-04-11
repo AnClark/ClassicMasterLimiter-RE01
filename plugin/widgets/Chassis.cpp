@@ -95,7 +95,7 @@ void ClassicMasterLimiterUI::_drawKjearhusLogo(const ImVec2& size)
     // Draw logo text
     //
     ImGuiExt::AddTextScaled(draw_list, ImGui::GetIO().Fonts->Fonts[2], 20.0f,
-                            ImVec2(pos.x + 10.0f, pos.y + 8.0f), IM_COL32(255, 255, 255, 255),
+                            ImVec2(pos.x + 10.0f, pos.y + 8.0f), IM_COL32(255, 255, 255, 225),
                             "KJÆRHUS AUDIO", 0.65f, 1.0f);
     
     //
@@ -122,7 +122,7 @@ void ClassicMasterLimiterUI::_drawKjearhusLogo(const ImVec2& size)
             kOSR_BgColor, kOSR_Rounding);
 
         ImGuiExt::AddTextScaled(draw_list, osr_font, kOSR_FontSz,
-                                text_pos, IM_COL32(255, 255, 255, 255),
+                                text_pos, IM_COL32(255, 255, 255, 220),
                                 info_text, kOSR_ScaleX, kOSR_ScaleY);
     }
 }
@@ -138,7 +138,9 @@ void ClassicMasterLimiterUI::_drawPluginName()
     ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[3]);
     ImGui::Dummy(ImVec2(0, 2)); // Left padding
     ImGui::SameLine();
+    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 255, 255, 200));
     ImGui::Text("Classic Master Limiter");
+    ImGui::PopStyleColor();
     ImGui::PopFont();
 
     ImGui::SameLine();
