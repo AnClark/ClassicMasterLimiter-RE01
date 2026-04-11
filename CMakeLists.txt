@@ -3,9 +3,9 @@ project(ClassicMasterLimiter VERSION 1.0.0)
 
 # ---------------------------------------------------------------------------
 # DPF (DISTRHO Plugin Framework)
-# Expects DPF to be checked out next to this project, e.g.:
-#   ├── ClassicMasterLimiter/   (this repo)
-#   └── DPF/
+# Expects DPF to be checked out inside this repo, as a submodule:
+#
+#    git submodule update --init --recursive
 #
 # Override with -DDPF_PATH=<path> if located elsewhere.
 # ---------------------------------------------------------------------------
