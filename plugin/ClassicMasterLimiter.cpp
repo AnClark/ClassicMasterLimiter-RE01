@@ -69,7 +69,7 @@ ClassicMasterLimiterPlugin::ClassicMasterLimiterPlugin()
     // Initialise with default sample rate so coefficients are valid before the
     // host calls sampleRateChanged()
     recalculateCoefficients();
-    activate();
+    resetBuffer();
 }
 
 // ---------------------------------------------------------------------------
@@ -148,6 +148,37 @@ void ClassicMasterLimiterPlugin::setParameterValue(uint32_t index, float value)
         fDirty = true;
     }
     // PARAM_PEAK_METER is output-only; ignore writes
+}
+
+// ---------------------------------------------------------------------------
+// sample rate change & playback state change handler
+// ---------------------------------------------------------------------------
+
+void ClassicMasterLimiterPlugin::sampleRateChanged(double /*newSampleRate*/)
+{
+    fDirty = true;
+    recalculateCoefficients();
+    resetBuffer();
+}
+
+void ClassicMasterLimiterPlugin::activate()
+{
+    // NOTICE: No need to reset buffers on every activation.
+    //         Hosts are expected to call sampleRateChanged() before processing and on sample rate changes,
+    //         which will reset the buffer and recalculate coefficients as needed.
+    //         If we reset buffer here, we may hear a click on every play start in hosts (for example, REAPER).
+    //
+    //         Now activate() only reports latency to host. This does not cost any extra CPU and avoids clicks
+    //         on play start in hosts that call activate() without sampleRateChanged().
+
+    // Report latency to host
+#if LIMITER_DELAY_MODE == 0
+    // Mode 0: Fixed 580 samples at all rates (matches original)
+#else
+    // Mode 1: Sample count scales with rate (~13.15 ms constant time)
+    //   44.1 kHz: ~580 samples, 96 kHz: ~1263 samples, 192 kHz: ~2525 samples
+#endif
+    setLatency(static_cast<uint32_t>(fState.totalDelaySamples));
 }
 
 // ---------------------------------------------------------------------------

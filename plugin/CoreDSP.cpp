@@ -2,16 +2,9 @@
 #include "Defines.h"
 
 // ---------------------------------------------------------------------------
-// DSP lifecycle
+// Reset audio buffer
 // ---------------------------------------------------------------------------
-void ClassicMasterLimiterPlugin::sampleRateChanged(double /*newSampleRate*/)
-{
-    fDirty = true;
-    recalculateCoefficients();
-    activate();
-}
-
-void ClassicMasterLimiterPlugin::activate()
+void ClassicMasterLimiterPlugin::resetBuffer()
 {
     // Clear all envelopes and ring buffers (mirrors FUN_0048365c open/reset)
     std::memset(fState.ringL, 0, sizeof(fState.ringL));
@@ -48,15 +41,6 @@ void ClassicMasterLimiterPlugin::activate()
     // Mirrors original init of state[0x180/0x184]=1.0
     fState.peakMeterL = 1.0f;
     fState.peakMeterR = 1.0f;
-
-    // Report latency to host
-#if LIMITER_DELAY_MODE == 0
-    // Mode 0: Fixed 580 samples at all rates (matches original)
-#else
-    // Mode 1: Sample count scales with rate (~13.15 ms constant time)
-    //   44.1 kHz: ~580 samples, 96 kHz: ~1263 samples, 192 kHz: ~2525 samples
-#endif
-    setLatency(static_cast<uint32_t>(fState.totalDelaySamples));
 }
 
 // ---------------------------------------------------------------------------

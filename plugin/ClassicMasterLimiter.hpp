@@ -128,6 +128,7 @@ protected:
 private:
     void recalculateCoefficients();
     void processSample(float inL, float inR, float& outL, float& outR);
+    void resetBuffer();
 
     LimiterState fState;
     bool         fDirty = true;
