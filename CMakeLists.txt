@@ -10,7 +10,7 @@ project(ClassicMasterLimiter VERSION 1.0.0)
 # Override with -DDPF_PATH=<path> if located elsewhere.
 # ---------------------------------------------------------------------------
 if(NOT DEFINED DPF_PATH)
-    set(DPF_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../DPF"
+    set(DPF_PATH "${PROJECT_SOURCE_DIR}/dpf"
         CACHE PATH "Path to the DISTRHO Plugin Framework")
 endif()
 
