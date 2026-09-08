@@ -98,7 +98,7 @@ void ClassicMasterLimiterUI::_drawGainReductionMeter()
         ImGui::EndGroup();
     }
 
-    ImGui::Dummy(ImVec2(0, SCALE(8.0f)));
+    ImGui::Dummy(ImVec2(0, (SCALE(1.0f) > 1.0f) ? SCALE(8.0f - 2.0f) : SCALE(8.0f)));
 
     // Label ("PEAK LEVEL METER")
     {
