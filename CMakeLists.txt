@@ -1,5 +1,17 @@
 cmake_minimum_required(VERSION 3.15)
-project(ClassicMasterLimiter VERSION 1.0.0)
+project(ClassicMasterLimiter
+    VERSION 1.0.0
+    DESCRIPTION "Classic Master Limiter RE-01 audio plugin"
+    LANGUAGES C CXX
+)
+
+# ---------------------------------------------------------------------------
+# Metadata for CPack
+# ---------------------------------------------------------------------------
+set(AUTHOR "AnClark Liu")
+set(INSTALL_DIRECTORY ${PROJECT_NAME})
+set(ICON_PATH "${PROJECT_SOURCE_DIR}/Screenshot.png")
+set(PRODUCTBUILD_IDENTIFIER "com.anclark.classicmasterlimiter.re01")
 
 # ---------------------------------------------------------------------------
 # DPF (DISTRHO Plugin Framework)
@@ -87,3 +99,8 @@ if(MSVC)
 else()
     target_compile_options(ClassicMasterLimiter PRIVATE -Wall -Wextra -Wpedantic)
 endif()
+
+# ---------------------------------------------------------------------------
+# Packaging rules
+# ---------------------------------------------------------------------------
+include("${PROJECT_SOURCE_DIR}/cmake/Packaging.cmake")
