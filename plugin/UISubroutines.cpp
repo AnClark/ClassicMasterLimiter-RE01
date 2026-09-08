@@ -25,10 +25,12 @@ static const ImGuiKnobs_Mod::KnobScaleMark kThresholdMarks[] = {
     {   0.0f, "0"   },
 };
 
+static constexpr float kScaleMarkInitFontSize = 12.5f;
+
 ImGuiKnobs_Mod::KnobScaleMarkStyle kScaleMarkStyle = {
     .outer_radius = 1.20f,
     .tick_length  = 0.50f,    
-    .font_size    = 12.5f,
+    .font_size    = kScaleMarkInitFontSize,
 };
 
 void ClassicMasterLimiterUI::_loadFonts()
@@ -90,11 +92,12 @@ void ClassicMasterLimiterUI::_loadFonts()
     // Specify a larger font for the scale marks to improve rendering quality.
     // The Knob widget will down-sample it to the specified font size (12.5px) to achieve better visual quality.
     kScaleMarkStyle.custom_font = io.Fonts->Fonts[2];
+    kScaleMarkStyle.font_size = kScaleMarkInitFontSize * getScaleFactor();
 }
 
 void ClassicMasterLimiterUI::_addThresholdKnob()
 {
-    constexpr float kKnobSize = 50.0f;
+    const float kKnobSize = SCALE(50.0f);
     constexpr int kDefaultStep = 10;
 
     constexpr float kPi = 3.14159265358979323846f;
@@ -144,7 +147,7 @@ bool ClassicMasterLimiterUI::_BeginSection(const char* title, float width)
     ImGui::PopStyleColor();
     ImGui::PopFont();
 
-    ImGui::Dummy(ImVec2(0.0f, 8.0f));
+    ImGui::Dummy(ImVec2(0.0f, SCALE(8.0f)));
     return true;
 }
 

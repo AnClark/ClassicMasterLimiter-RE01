@@ -18,8 +18,14 @@ protected:
 
 private:
     float fParams[DISTRHO_PLUGIN_NUM_PARAMETERS];
+    float fScaleFactor = 1.0f;
     int fLastMouseCursor = -1;
     bool fAboutWindowOpened = false;
+
+    inline float SCALE(float value) const
+    {
+        return value * fScaleFactor;
+    }
 
     void _loadFonts();
 

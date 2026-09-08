@@ -12,7 +12,7 @@ void ClassicMasterLimiterUI::_drawChassisBackground(float margin, float rounding
     ImDrawList* drawList = ImGui::GetWindowDrawList();
 
     static constexpr int kShadowLayers = 6;
-    static constexpr float kShadowMax = 9.0f;
+    const float kShadowMax = SCALE(9.0f);
     for (int i = kShadowLayers; i >= 1; --i)
     {
         const float frac = static_cast<float>(i) / static_cast<float>(kShadowLayers);
@@ -30,7 +30,7 @@ void ClassicMasterLimiterUI::_drawChassisBackground(float margin, float rounding
 
     // Subtle top-left highlight edge to reinforce the upper-left light
     // Highlight colour #ffd5af derived from base colour using light-source relationship formula
-    drawList->AddRect(panelMin, panelMax, IM_COL32(0xff, 0xd5, 0xaf, 60), rounding, 0, 1.5f); // 1.5f * scale);
+    drawList->AddRect(panelMin, panelMax, IM_COL32(0xff, 0xd5, 0xaf, 60), rounding, 0, SCALE(1.5f));
 }
 
 void ClassicMasterLimiterUI::_drawKjearhusLogo(const ImVec2& size)
@@ -57,16 +57,16 @@ void ClassicMasterLimiterUI::_drawKjearhusLogo(const ImVec2& size)
     // (Actually it is not a real triangle, as its two lanes are Bezier curves.)
     //
     {
-        const float triangle_left_line_length = 40.0f;  // The triangle line on the left of charater "A"
-        const float triangle_height = 35.0f;
+        const float triangle_left_line_length = SCALE(40.0f);  // The triangle line on the left of charater "A"
+        const float triangle_height = SCALE(35.0f);
 
-        const ImVec2 triangle_p1 = ImVec2(pos.x + 72.0f, pos.y - 1.0f);
+        const ImVec2 triangle_p1 = ImVec2(pos.x + SCALE(72.0f), pos.y - SCALE(1.0f));
         const ImVec2 triangle_p2 = ImVec2(triangle_p1.x, triangle_p1.y + triangle_left_line_length);
         const ImVec2 triangle_p3 = ImVec2(triangle_p1.x + triangle_height, triangle_p1.y + (triangle_left_line_length * 0.5f));
 
         // Amount the two slanted edges curve inward (toward the triangle interior).
         // Increase this value for a more pronounced concave effect.
-        const float curve_inset = 10.0f;
+        const float curve_inset = SCALE(10.0f);
 
         // Control point for edge p1 → p3:
         //   midpoint of p1-p3, shifted downward (toward p2) by curve_inset.
@@ -94,8 +94,8 @@ void ClassicMasterLimiterUI::_drawKjearhusLogo(const ImVec2& size)
     //
     // Draw logo text
     //
-    ImGuiExt::AddTextScaled(draw_list, ImGui::GetIO().Fonts->Fonts[2], 20.0f,
-                            ImVec2(pos.x + 10.0f, pos.y + 8.0f), IM_COL32(255, 255, 255, 225),
+    ImGuiExt::AddTextScaled(draw_list, ImGui::GetIO().Fonts->Fonts[2], SCALE(20.0f),
+                            ImVec2(pos.x + SCALE(10.0f), pos.y + SCALE(8.0f)), IM_COL32(255, 255, 255, 225),
                             "KJÆRHUS AUDIO", 0.65f, 1.0f);
     
     //
@@ -103,16 +103,16 @@ void ClassicMasterLimiterUI::_drawKjearhusLogo(const ImVec2& size)
     //
     {
         const char* info_text = "Recreated by AnClark";
-        constexpr float kOSR_FontSz   = 16.0f;
+        const float kOSR_FontSz       = SCALE(16.0f);
         constexpr float kOSR_ScaleX   = 0.8f;
         constexpr float kOSR_ScaleY   = 0.8f;
-        constexpr float kOSR_PadX     = 8.0f;              // ← adjustable horizontal padding
-        constexpr float kOSR_PadY     = 1.0f;              // ← adjustable vertical padding
-        constexpr float kOSR_Rounding = 3.0f;              // ← adjustable corner rounding
+        const float kOSR_PadX         = SCALE(8.0f);              // ← adjustable horizontal padding
+        const float kOSR_PadY         = SCALE(1.0f);              // ← adjustable vertical padding
+        const float kOSR_Rounding     = SCALE(3.0f);              // ← adjustable corner rounding
         constexpr ImU32 kOSR_BgColor  = IM_COL32(120, 120, 120, 120); // ← adjustable bg colour / alpha
 
         ImFont*        osr_font  = ImGui::GetIO().Fonts->Fonts[2];
-        const ImVec2   text_pos  = ImVec2(pos.x + 10.0f, pos.y + 8.0f + 22.0f);
+        const ImVec2   text_pos  = ImVec2(pos.x + SCALE(10.0f), pos.y + SCALE(8.0f + 22.0f));
         const ImVec2   raw_sz    = osr_font->CalcTextSizeA(kOSR_FontSz, FLT_MAX, 0.0f, info_text);
         const ImVec2   text_sz   = ImVec2(raw_sz.x * kOSR_ScaleX, raw_sz.y * kOSR_ScaleY);
 
@@ -136,7 +136,7 @@ void ClassicMasterLimiterUI::_drawPluginName()
     //
     ImGui::AlignTextToFramePadding();   // make the text align with the baseline of the chassis
     ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[3]);
-    ImGui::Dummy(ImVec2(0, 2)); // Left padding
+    ImGui::Dummy(ImVec2(0, SCALE(2.0f))); // Left padding
     ImGui::SameLine();
     ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 255, 255, 200));
     ImGui::Text("Classic Master Limiter");
@@ -153,10 +153,10 @@ void ClassicMasterLimiterUI::_drawPluginName()
     {
         ImDrawList*     dl      = ImGui::GetWindowDrawList();
         ImFont*         font    = ImGui::GetIO().Fonts->Fonts[2];
-        constexpr float kFontSz = 12.5f;
-        constexpr float kPadX   = 5.0f - 2.0f;
-        constexpr float kPadY   = 2.0f;
-        constexpr float kRound  = 4.0f;
+        const float kFontSz = SCALE(12.5f);
+        const float kPadX   = SCALE(5.0f - 2.0f);
+        const float kPadY   = SCALE(2.0f);
+        const float kRound  = SCALE(4.0f);
 
         const ImVec2 re_sz  = font->CalcTextSizeA(kFontSz, FLT_MAX, 0.0f, "RE");
         const ImVec2 o4_sz  = font->CalcTextSizeA(kFontSz, FLT_MAX, 0.0f, "04");
@@ -165,7 +165,7 @@ void ClassicMasterLimiterUI::_drawPluginName()
         const float  rw     = o4_sz.x + kPadX * 2.0f;   // right half width
 
         const ImVec2 cursor_pos  = ImGui::GetCursorScreenPos();
-        const ImVec2 p0          = ImVec2(cursor_pos.x, cursor_pos.y + 4.0f); // Vertical adjustment to align with the chassis
+        const ImVec2 p0          = ImVec2(cursor_pos.x, cursor_pos.y + SCALE(4.0f)); // Vertical adjustment to align with the chassis
         const ImVec2 mid = ImVec2(p0.x + lw,      p0.y);
         const ImVec2 p1  = ImVec2(p0.x + lw + rw, p0.y + height);
 

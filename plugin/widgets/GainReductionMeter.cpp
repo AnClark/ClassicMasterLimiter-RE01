@@ -15,6 +15,12 @@ void ClassicMasterLimiterUI::_drawGainReductionMeter()
     ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);
 
     ImDrawList* drawList = ImGui::GetWindowDrawList();  // for drawing scale dashes
+    const float ledRadius = SCALE(4.0f);
+    const float ledBorderWidth = SCALE(1.2f);
+    const float ledCenterOffset = ledRadius + ledBorderWidth;
+    const float ledWidgetSize = ledCenterOffset * 2.0f;
+    const float scaleGap = SCALE(1.0f);
+    const float scaleDashLength = SCALE(3.0f);
 
     // Left channel meter
     {
@@ -23,7 +29,7 @@ void ClassicMasterLimiterUI::_drawGainReductionMeter()
         const ImVec2 initPos = ImGui::GetCursorPos();   // store initial position to align LEDs
         ImGui::Text("LEFT");
         ImGui::SameLine();
-        ImGui::SetCursorPosX(initPos.x + 44.0f);   // align LEDs with initial position
+        ImGui::SetCursorPosX(initPos.x + SCALE(44.0f));   // align LEDs with initial position
 
         for (int32_t idx_L = -10; idx_L <= 0; idx_L++)
         {
@@ -31,31 +37,33 @@ void ClassicMasterLimiterUI::_drawGainReductionMeter()
             //         avoiding messing up layouts of right channel LEDs
             ImGui::BeginGroup();
             
-            const ImVec2 LEDInitPos = ImGui::GetCursorPos();    // store LED position to draw scale dash later
+            const ImVec2 LEDInitPos = ImGui::GetCursorPos();    // store LED position for layout offsets
+            const ImVec2 LEDScreenPos = ImGui::GetCursorScreenPos(); // draw-list coordinates are screen-space
 
             // Draw LED
-            ImGuiExt::LEDIndicator("##LED_L", (std::ceil(fParams[PARAM_GAIN_REDUCTION_L]) < idx_L) ? true : false, 
-                            ImVec4(1.f, 0.f, 0.f, 1.f), 4.0f);
+            ImGuiExt::LEDIndicator("##LED_L", (std::ceil(fParams[PARAM_GAIN_REDUCTION_L]) < idx_L) ? true : false,
+                            ImVec4(1.f, 0.f, 0.f, 1.f), ledRadius, ledBorderWidth);
 
             // Draw scale number
-            ImGui::SetCursorPosX(LEDInitPos.x + ((idx_L <= -10) ? -1.0f : 3.0f));
-            ImGui::SetCursorPosY(LEDInitPos.y + 14.0f);
+            // On Retina display, prefer less offset, otherwise numbers may misalign.
+            ImGui::SetCursorPosX(LEDInitPos.x + SCALE((idx_L <= -10) ? -1.0f : 3.0f));
+            ImGui::SetCursorPosY(LEDInitPos.y + ledWidgetSize + SCALE(5.0f));
             ImGui::Text("%d", -idx_L);
 
-            // Draw vertical scale dash (above scale number)
-            const ImVec2 dashBegin = ImVec2(LEDInitPos.x + 8.5f, LEDInitPos.y + 16.0f);
-            const ImVec2 dashEnd = ImVec2(dashBegin.x, dashBegin.y + 3.0f);
-            drawList->AddLine(dashBegin, dashEnd, IM_COL32(255, 255, 255, 255));
+            // Draw the scale dash in the gap below the LED and above its number.
+            const ImVec2 dashBegin = ImVec2(LEDScreenPos.x + ledCenterOffset, LEDScreenPos.y + ledWidgetSize + scaleGap);
+            const ImVec2 dashEnd = ImVec2(dashBegin.x, dashBegin.y + scaleDashLength);
+            drawList->AddLine(dashBegin, dashEnd, IM_COL32(255, 255, 255, 255), SCALE(1.0f));
 
             ImGui::EndGroup();
 
-            ImGui::SameLine(0, 2);  // to draw the next LED in the same line
+            ImGui::SameLine(0, SCALE(2.0f));  // to draw the next LED in the same line
         }
 
         // Draw unit ("dB")
         const ImVec2 currentPos = ImGui::GetCursorPos();
-        ImGui::SetCursorPosX(currentPos.x + 4.0f);
-        ImGui::SetCursorPosY(currentPos.y + 14.0f);
+        ImGui::SetCursorPosX(currentPos.x + SCALE(4.0f));
+        ImGui::SetCursorPosY(currentPos.y + SCALE(14.0f));
         ImGui::Text("dB");
 
         ImGui::EndGroup();
@@ -68,33 +76,34 @@ void ClassicMasterLimiterUI::_drawGainReductionMeter()
         const ImVec2 initPos = ImGui::GetCursorPos();   // store initial position to align LEDs
         ImGui::Text("RIGHT");
         ImGui::SameLine();
-        ImGui::SetCursorPosX(initPos.x + 44.0f); // align LEDs with initial position
+        ImGui::SetCursorPosX(initPos.x + SCALE(44.0f)); // align LEDs with initial position
 
         for (int32_t idx_R = -10; idx_R <= 0; idx_R++)
         {
-            const ImVec2 LEDInitPos = ImGui::GetCursorPos(); // store initial position to align LEDs and scale dashes
+            const ImVec2 LEDInitPos = ImGui::GetCursorPos(); // store initial position for layout offsets
+            const ImVec2 LEDScreenPos = ImGui::GetCursorScreenPos(); // draw-list coordinates are screen-space
 
             // Draw LED
             ImGuiExt::LEDIndicator("##LED_R", (std::ceil(fParams[PARAM_GAIN_REDUCTION_R]) < idx_R) ? true : false,
-                            ImVec4(1.f, 0.f, 0.f, 1.f), 4.0f);
+                            ImVec4(1.f, 0.f, 0.f, 1.f), ledRadius, ledBorderWidth);
 
-            // Draw vertical scale dash (below scale number)
-            const ImVec2 dashBegin = ImVec2(LEDInitPos.x + 9.0f, LEDInitPos.y);
-            const ImVec2 dashEnd = ImVec2(dashBegin.x, dashBegin.y + 3.0f);
-            drawList->AddLine(dashBegin, dashEnd, IM_COL32(255, 255, 255, 255));
+            // Draw the scale dash directly below the LED.
+            const ImVec2 dashBegin = ImVec2(LEDScreenPos.x + ledCenterOffset, LEDScreenPos.y);
+            const ImVec2 dashEnd = ImVec2(dashBegin.x, dashBegin.y - scaleDashLength);
+            drawList->AddLine(dashBegin, dashEnd, IM_COL32(255, 255, 255, 255), SCALE(1.0f));
 
-            ImGui::SameLine(0, 2);  // to draw the next LED in the same line
+            ImGui::SameLine(0, SCALE(2.0f));  // to draw the next LED in the same line
         }
 
         ImGui::EndGroup();
     }
 
-    ImGui::Dummy(ImVec2(0, 8));
+    ImGui::Dummy(ImVec2(0, SCALE(8.0f)));
 
     // Label ("PEAK LEVEL METER")
     {
         ImGui::AlignTextToFramePadding();
-        ImGui::Dummy(ImVec2(50, 0));
+        ImGui::Dummy(ImVec2(SCALE(50.0f), 0));
         ImGui::SameLine();
         ImGui::Text("PEAK LEVEL METER");
     }
