@@ -65,7 +65,7 @@ configure_file (plugin/config.h.in ${PROJECT_BINARY_DIR}/config.h @ONLY)
 # ---------------------------------------------------------------------------
 # Build DPF targets
 # ---------------------------------------------------------------------------
-dpf_add_plugin(ClassicMasterLimiter
+dpf_add_plugin(${PROJECT_NAME}
     TARGETS
         vst2 vst3 clap ${TARGET_JACK}
     MONOLITHIC
@@ -80,7 +80,7 @@ dpf_add_plugin(ClassicMasterLimiter
         widgets/imgui-knobs-mod/imgui-knobs.cpp
 )
 
-target_include_directories(ClassicMasterLimiter PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
     ${PLUGIN_INCLUDES}
     ${PROJECT_BINARY_DIR}
     widgets/dpf-imgui
@@ -89,15 +89,15 @@ target_include_directories(ClassicMasterLimiter PUBLIC
     widgets/imgui-ext
 )
 
-target_compile_definitions(ClassicMasterLimiter-ui PRIVATE IMGUI_KNOBS_SET_CURSOR=1)
+target_compile_definitions(${PROJECT_NAME}-ui PRIVATE IMGUI_KNOBS_SET_CURSOR=1)
 
 # Require C++14 for constexpr and related features
-target_compile_features(ClassicMasterLimiter PUBLIC cxx_std_14)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
 if(MSVC)
-    target_compile_options(ClassicMasterLimiter PRIVATE /W3)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W3)
 else()
-    target_compile_options(ClassicMasterLimiter PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 # ---------------------------------------------------------------------------
