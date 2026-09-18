@@ -57,6 +57,12 @@ set(PLUGIN_INCLUDES
     plugin/
 )
 
+set (FONT_FILES
+    fonts/LiberationSans-Regular.cpp
+    fonts/CormorantFont.cpp
+    fonts/FontAwesome5.cpp
+)
+
 # ---------------------------------------------------------------------------
 # Generate config.h from config.h.in with version numbers
 # ---------------------------------------------------------------------------
@@ -78,6 +84,7 @@ dpf_add_plugin(${PROJECT_NAME}
         plugin/widgets/GainReductionMeter.cpp
         widgets/dpf-imgui/DearImGui.cpp
         widgets/imgui-knobs-mod/imgui-knobs.cpp
+        ${FONT_FILES}
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC

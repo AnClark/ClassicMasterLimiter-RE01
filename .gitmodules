@@ -1,3 +1,6 @@
 [submodule "dpf"]
 	path = dpf
 	url = https://github.com/DISTRHO/DPF.git
+[submodule "fonts"]
+	path = fonts
+	url = https://github.com/AnClark/ClassicSeriesRE-Fonts.git
