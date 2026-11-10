@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 project(ClassicMasterLimiter
-    VERSION 1.1.0
+    VERSION 1.1.1
     DESCRIPTION "Classic Master Limiter RE-01 audio plugin"
     LANGUAGES C CXX
 )
